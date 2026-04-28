@@ -34,6 +34,14 @@ export default function App() {
 
   const deleteTodo = (id) => setTodos(todos.filter((t) => t.id !== id))
 
+  // FR6 — remove all completed todos at once
+  const clearCompleted = () => {
+    const completed = todos.filter((t) => t.done).length
+    if (completed === 0) return
+    setTodos(todos.filter((t) => !t.done))
+    announce(`Cleared ${completed} completed ${completed === 1 ? 'todo' : 'todos'}`)
+  }
+
   // FR2 — update the due date of an existing todo
   const updateDueDate = (id, newDate) =>
     setTodos(todos.map((t) => (t.id === id ? { ...t, dueDate: newDate } : t)))
@@ -43,6 +51,7 @@ export default function App() {
   )
 
   const remaining = todos.filter((t) => !t.done).length
+  const completedCount = todos.length - remaining
 
   // NFR3 — filter change handler that also announces to screen readers
   const changeFilter = (name) => {
@@ -217,6 +226,19 @@ export default function App() {
 
         <div className="mt-4 text-sm text-slate-500">
           {remaining} {remaining === 1 ? 'item' : 'items'} left
+        </div>
+
+        {/* FR6 — Clear completed */}
+        <div className="mt-3">
+          <button
+            type="button"
+            onClick={clearCompleted}
+            disabled={completedCount === 0}
+            aria-disabled={completedCount === 0}
+            className="w-full px-3 py-2 rounded-md text-sm font-medium border border-slate-200 text-slate-600 hover:bg-slate-50 transition disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            Clear completed
+          </button>
         </div>
       </div>
     </div>
